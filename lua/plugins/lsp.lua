@@ -55,16 +55,6 @@ local servers = {
   -- pyright = {},
   -- rust_analyzer = {},
 
-  -- Web development
-  ts_ls = {},
-  cssls = {},
-  jsonls = {},
-  html = {},
-  eslint = {},
-  tailwindcss = {},
-  emmet_language_server = {
-    filetypes = { 'html', 'css', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
-  },
   stylua = {},
 
   -- Lua (neovim config project)

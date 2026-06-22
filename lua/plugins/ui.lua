@@ -17,6 +17,9 @@ require('which-key').setup {
     { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
     { '<leader>t', group = '[T]oggle' },
     { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+    { '<leader>f', group = '[F]ormat', mode = { 'n', 'v' } },
+    { '<leader>b', group = 'Debug [B]reakpoint' },
+    { '<leader>B', group = 'Debug [B]reakpoint (conditional)' },
     { 'gr', group = 'LSP Actions', mode = { 'n' } },
   },
 }

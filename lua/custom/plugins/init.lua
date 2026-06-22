@@ -1,6 +1,11 @@
 -- Auto-load plugin configs from lua/custom/plugins/ and subdirectories.
 -- Files are loaded in alphabetical order for reproducibility.
 -- A broken file won't prevent the rest from loading (pcall-wrapped).
+--
+-- NOTE: If plugin B depends on plugin A being set up first, name them so
+-- A sorts before B (e.g. 01-lsp.lua, 02-lint.lua). Currently this works
+-- because all dependencies (luasnip, conform, lint, nvim-lspconfig) are
+-- loaded earlier in init.lua before custom/plugins/ runs.
 
 local plugins_dir = vim.fs.joinpath(vim.fn.stdpath 'config', 'lua', 'custom', 'plugins')
 

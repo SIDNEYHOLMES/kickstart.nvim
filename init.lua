@@ -1,12 +1,19 @@
--- Neovim configuration
--- Originally based on kickstart.nvim
+-- Neovim configuration — modularized kickstart.nvim
+--
+-- This is the ACTIVE config that Neovim loads.
+-- The original, unmodified kickstart.nvim init.lua is preserved in
+-- init-kickstart.lua for reference (the full monolithic version with
+-- all settings, lazy.nvim setup, and plugin configs in one file).
 --
 -- Structure:
 --   lua/config/options.lua     — core settings, keymaps, autocmds
 --   lua/config/pack.lua        — vim.pack build hooks
 --   lua/plugins/               — plugin configurations (one per file)
 --   lua/kickstart/plugins/     — bundled example plugins
---   lua/custom                 - custom plugins and keymaps 
+--   lua/custom/                — your personal plugins, keymaps, options
+--     lua/custom/options.lua   — custom settings & autocmds
+--     lua/custom/keymaps.lua   — custom keybindings
+--     lua/custom/plugins/      — custom plugin configs (auto-loaded)
 
 require 'config.options'
 
@@ -43,16 +50,9 @@ require 'kickstart.plugins.gitsigns'
 -- Custom user plugins (webdev, etc.)
 require 'custom.plugins'
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-  callback = function()
-    vim.opt_local.expandtab = true   -- use spaces, not tabs
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.tabstop = 2
-    vim.opt_local.softtabstop = 2
-  end,
-})
+-- Custom user options & autocmds
+require 'custom.options'
 
--- Custom user keymaps (multi cursor, move line)
+-- Custom user keymaps (move line)
 require 'custom.keymaps'
 -- vim: ts=2 sts=2 sw=2 et

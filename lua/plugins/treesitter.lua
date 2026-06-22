@@ -14,7 +14,7 @@ local function treesitter_try_attach(buf, language)
   vim.treesitter.start(buf, language)
 
   -- Enable treesitter-based indentation if available
-  local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
+  local has_indent_query = vim.treesitter.query.get(language, 'indent') ~= nil
   if has_indent_query then vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" end
 end
 
