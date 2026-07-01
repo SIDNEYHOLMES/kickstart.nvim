@@ -4,10 +4,10 @@ This is my personal neovim config, im still new and updating it frequently. sugg
 
 This nvim config has a primary focus on react webdev aswell as continued updates for what i need in that moment, will update this readme with features and ideas. 
 
-## Thanks for checking this out
+**Thanks for checking this out**
 
+## EVERYTHING BELOW IS BASE INSTALLATION 
 
-|||||||||||||||||||||| EVERYTHING BELOW IS BASE INSTALLATION |||||||||||||||||||||
 
 # kickstart.nvim
 
