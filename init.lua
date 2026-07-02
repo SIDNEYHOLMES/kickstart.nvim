@@ -116,39 +116,39 @@ vim.o.showmode = false
 --  See `:help 'clipboard'`
 vim.schedule(function() vim.o.clipboard = 'unnamedplus' end)
 
--- Enable break indent
+-- Enable break indent (wrapped lines keep their indent, not column 0)
 vim.o.breakindent = true
 
+-- Don't wrap lines by default (use :set wrap to toggle)
+vim.o.wrap = false
+
+-- Show whitespace characters so you can see tabs vs spaces at a glance.
+-- tabs render as », trailing spaces as ·, non-breaking spaces as ␣.
+-- precedes « and extends » show when text is scrolled off-screen.
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', precedes = '←', extends = '→' }
+
 -- Enable undo/redo changes even after closing and reopening a file
+-- (undo history is persisted to disk in the stdpath data directory)
 vim.o.undofile = true
 
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+-- Case-insensitive searching UNLESS \C or one or more capital letters in the search term.
+-- smartcase: if you type any uppercase, the search becomes case-sensitive automatically.
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
--- Keep signcolumn on by default
+-- Keep signcolumn on by default (avoids layout shifts when diagnostics appear)
 vim.o.signcolumn = 'yes'
 
--- Decrease update time
+-- Decrease update time (ms before CursorHold fires — faster LSP reference highlights)
 vim.o.updatetime = 250
 
--- Decrease mapped sequence wait time
+-- Decrease mapped sequence wait time (ms before a partial key-sequence is considered "done")
 vim.o.timeoutlen = 300
 
--- Configure how new splits should be opened
+-- Configure how new splits should be opened (right and below feels more natural)
 vim.o.splitright = true
 vim.o.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
---
---  Notice listchars is set using `vim.opt` instead of `vim.o`.
---  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
---   See `:help lua-options`
---   and `:help lua-guide-options`
-vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -702,8 +702,17 @@ require('lazy').setup({
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        -- You can use 'stop_after_first' to run the first available formatter from the list.
+        -- prettierd is a faster daemon; falls back to regular prettier if not installed.
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        json = { 'prettierd', 'prettier', stop_after_first = true },
+        jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+        css = { 'prettierd', 'prettier', stop_after_first = true },
+        scss = { 'prettierd', 'prettier', stop_after_first = true },
+        html = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -877,6 +886,10 @@ require('lazy').setup({
     branch = 'main',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
     config = function()
+      -- Add nvim-treesitter runtime queries to rtp so indent queries
+      -- (HTML, JSX, etc.) are found for treesitter-based indentation
+      vim.opt.rtp:prepend(vim.fn.stdpath('data') .. '/lazy/nvim-treesitter/runtime')
+
       -- ensure basic parser are installed
       -- Added 'tsx' for React/JSX support
       local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'tsx', 'javascript', 'typescript' }
@@ -898,6 +911,14 @@ require('lazy').setup({
         -- check if treesitter indentation is available for this language, and if so enable it
         -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
         local has_indent_query = vim.treesitter.query.get(language, 'indent') ~= nil
+        if not has_indent_query then
+          -- Query might not be cached yet — try to load it from the runtime path
+          local indent_files = vim.api.nvim_get_runtime_file('queries/' .. language .. '/indents.scm', true)
+          if #indent_files > 0 then
+            vim.treesitter.query.set(language, 'indent', table.concat(vim.fn.readfile(indent_files[1]), '\n'))
+            has_indent_query = true
+          end
+        end
 
         -- enables treesitter based indentation for all supported languages
         -- This includes JSX/TSX for React files
