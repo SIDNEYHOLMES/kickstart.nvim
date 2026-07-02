@@ -167,6 +167,9 @@ vim.o.confirm = true
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+-- [[ IMPORT CUSTOM KEYMAPS & CONFIG ]] --
+require 'custom.keymaps'
+require 'custom.options'
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -760,7 +763,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'super-tab',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -875,7 +878,8 @@ require('lazy').setup({
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
     config = function()
       -- ensure basic parser are installed
-      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      -- Added 'tsx' for React/JSX support
+      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'tsx', 'javascript', 'typescript' }
       require('nvim-treesitter').install(parsers)
 
       ---@param buf integer
@@ -895,9 +899,14 @@ require('lazy').setup({
         -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
         local has_indent_query = vim.treesitter.query.get(language, 'indent') ~= nil
 
-        -- enables treesitter based indentation
-        if has_indent_query then vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" end
+        -- enables treesitter based indentation for all supported languages
+        -- This includes JSX/TSX for React files
+        if has_indent_query then vim.bo[buf].indentexpr = "v:lua.vim.treesitter._indent.compute_indent()" end
       end
+
+      -- Ensure JSX and TSX files are mapped to the correct parsers
+      vim.treesitter.language.register('tsx', 'javascriptreact')
+      vim.treesitter.language.register('tsx', 'typescriptreact')
 
       local available_parsers = require('nvim-treesitter').get_available()
       vim.api.nvim_create_autocmd('FileType', {

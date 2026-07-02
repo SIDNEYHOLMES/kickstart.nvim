@@ -1,6 +1,6 @@
 -- keymaps.lua
 
--- ── Move Lines ────────────────────────────────────────────────────────────────
+-- ── Move Lines (with alt) ────────────────────────────────────────────────────────────────
 
 -- Normal mode: move current line down with Alt+j
 vim.keymap.set('n', '<A-j>', ':m .+1<CR>==', { desc = 'Move line down' })
