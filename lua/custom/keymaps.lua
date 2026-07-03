@@ -51,16 +51,23 @@ vim.api.nvim_create_autocmd('FileType', {
       local before = line:sub(1, col)
       local after = line:sub(col + 1)
 
+      -- Capture everything we need before any deferred call
+      local row = vim.api.nvim_win_get_cursor(0)[1]
+      local base_indent = line:match '^(%s*)' or ''
+
       local tag = opening_tag_name(before)
       if not tag or closing_tag_name(after) ~= tag then
-        -- Not between matching tags — normal Enter
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, true, true), 'n', false)
+        -- Not between matching tags — insert newline at same indent scope
+        local new_line_content = base_indent .. after
+        vim.schedule(function()
+          vim.api.nvim_buf_set_lines(0, row - 1, row, false, { before, new_line_content })
+          vim.api.nvim_win_set_cursor(0, { row + 1, #base_indent })
+          vim.cmd 'startinsert'
+        end)
         return
       end
 
-      -- Capture everything we need before the deferred call
-      local row = vim.api.nvim_win_get_cursor(0)[1]
-      local base_indent = line:match '^(%s*)' or ''
+      -- Between matching opening/closing tags — expand to three lines
       local sw = vim.bo.shiftwidth
       local child_indent = base_indent .. string.rep(' ', sw)
       local _, open_end = before:find '<%w+[^>]*>$'
@@ -73,8 +80,6 @@ vim.api.nvim_create_autocmd('FileType', {
         new_lines[3] = new_lines[3] .. trailing
       end
 
-      -- Defer the buffer edit to the next event-loop tick so we're no longer
-      -- inside the keymap callback when we modify the buffer.
       vim.schedule(function()
         vim.api.nvim_buf_set_lines(0, row - 1, row, false, new_lines)
         vim.api.nvim_win_set_cursor(0, { row + 1, #child_indent })
