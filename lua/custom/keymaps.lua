@@ -44,6 +44,14 @@ end
 vim.api.nvim_create_autocmd('FileType', {
   pattern = html_like_ft,
   callback = function(args)
+    -- Remove o/O from indentkeys so normal-mode o/O use autoindent
+    -- (copy previous line's indent) instead of treesitter's indentexpr,
+    -- which often returns 0 for HTML and sends the cursor to column 0.
+    local indentkeys = vim.bo[args.buf].indentkeys
+    if indentkeys then
+      vim.bo[args.buf].indentkeys = indentkeys:gsub('o,', ''):gsub(',O', ''):gsub('o', '')
+    end
+
     map('i', '<CR>', function()
       local line = vim.api.nvim_get_current_line()
       local col = vim.api.nvim_win_get_cursor(0)[2] -- 0-indexed byte column
