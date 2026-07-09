@@ -1,7 +1,15 @@
 -- keymaps.lua
 -- Custom keybindings — keep them grouped by feature so they're easy to scan.
 
+---@diagnostic disable: undefined-global prevents undefined global vim on all vim.keymap type syntax
+
 local map = vim.keymap.set
+
+-- ── Resize Window (Ctrl + Alt + <Arrow key> ) ─────────────────────────────────────────────
+vim.keymap.set('n', '<C-S-Up>', ':resize +2<CR>', { desc = 'Increase pane height' })
+vim.keymap.set('n', '<C-S-Down>', ':resize -2<CR>', { desc = 'Decrease pane height' })
+vim.keymap.set('n', '<C-S-Left>', ':vertical resize -2<CR>', { desc = 'Increase pane width' })
+vim.keymap.set('n', '<C-S-Right>', ':vertical resize +2<CR>', { desc = 'Decrease pane width' })
 
 -- ── Filetypes that get HTML tag-expansion on Enter ─────────────────────────
 local html_like_ft = { 'html', 'javascriptreact', 'typescriptreact', 'vue', 'svelte', 'xml', 'jsx', 'tsx' }
@@ -32,14 +40,10 @@ map('n', '<S-Tab>', '<<_', { desc = 'Outdent line' })
 -- when modifying the buffer directly inside an insert-mode keymap callback.
 
 ---Returns tag name if the text before the cursor ends with an opening tag.
-local function opening_tag_name(text)
-  return text:match '<(%w+)[^>]*>$'
-end
+local function opening_tag_name(text) return text:match '<(%w+)[^>]*>$' end
 
 ---Returns tag name if the text after the cursor starts with a closing tag.
-local function closing_tag_name(text)
-  return text:match '^</(%w+)%s*>'
-end
+local function closing_tag_name(text) return text:match '^</(%w+)%s*>' end
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = html_like_ft,
@@ -48,9 +52,7 @@ vim.api.nvim_create_autocmd('FileType', {
     -- (copy previous line's indent) instead of treesitter's indentexpr,
     -- which often returns 0 for HTML and sends the cursor to column 0.
     local indentkeys = vim.bo[args.buf].indentkeys
-    if indentkeys then
-      vim.bo[args.buf].indentkeys = indentkeys:gsub('o,', ''):gsub(',O', ''):gsub('o', '')
-    end
+    if indentkeys then vim.bo[args.buf].indentkeys = indentkeys:gsub('o,', ''):gsub(',O', ''):gsub('o', '') end
 
     map('i', '<CR>', function()
       local line = vim.api.nvim_get_current_line()
@@ -84,9 +86,7 @@ vim.api.nvim_create_autocmd('FileType', {
       local trailing = after:sub(#close_part + 1)
 
       local new_lines = { open_part, child_indent, base_indent .. close_part }
-      if trailing ~= '' then
-        new_lines[3] = new_lines[3] .. trailing
-      end
+      if trailing ~= '' then new_lines[3] = new_lines[3] .. trailing end
 
       vim.schedule(function()
         vim.api.nvim_buf_set_lines(0, row - 1, row, false, new_lines)
