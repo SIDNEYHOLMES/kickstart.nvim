@@ -8,5 +8,5 @@
 
 
 
--- Bootstrap lazy.nvim (package manager)
+-- Bootstrap lazy.nvim and load plugins
 require("config.Lazy")
