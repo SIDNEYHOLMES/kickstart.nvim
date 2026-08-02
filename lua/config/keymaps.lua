@@ -95,7 +95,7 @@ end, { desc = 'Window resize mode (S-hjkl)' })
 -- Uses getbufinfo() to get the i-th buffer from the listed list.
 map('n', '<leader>bn', '<cmd>bnext<CR>', { desc = 'Next buffer' })
 map('n', '<leader>bp', '<cmd>bprevious<CR>', { desc = 'Previous buffer' })
-map('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = 'Delete buffer' })
+map('n', '<leader>bq', '<cmd>bdelete<CR>', { desc = 'Delete buffer' })
 map('n', '<leader>bo', '<cmd>BufferLineCloseOthers<CR>', { desc = 'Close other buffers' })
 for i = 1, 9 do
   map('n', '<leader>b' .. i, function()
