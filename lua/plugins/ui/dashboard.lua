@@ -3,7 +3,7 @@
 -- Shows ASCII art header + quick-action buttons when nvim starts with no file.
 --
 -- ASCII art uses Lua long-bracket strings ([[ ... ]]) so backslashes are
--- literal — no escaping needed. Each line is one string in header.val.
+-- literal -- no escaping needed. Each line is one string in header.val.
 --
 -- Buttons:
 --   f  Find files     (Telescope find_files)
@@ -14,13 +14,12 @@
 --   q  Quit           (:qa)
 return {
   'goolord/alpha-nvim',
-  event = 'VimEnter',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = function()
     local alpha = require 'alpha'
     local dashboard = require 'alpha.themes.dashboard'
 
-    -- ASCII art header — each line is a [[ literal string ]]
+    -- ASCII art header -- each line is a [[ literal string ]]
     -- Backslashes are literal in [[ ]], no \\ needed
     dashboard.section.header.val = {
       [[      ___                                     ___                                     ___     ]],
@@ -40,12 +39,29 @@ return {
     dashboard.section.buttons.val = {
       dashboard.button('f', '  Find file', ':Telescope find_files<CR>'),
       dashboard.button('r', '  Recent files', ':Telescope oldfiles<CR>'),
-      dashboard.button('p', '  Projects', ':Telescope projects<CR>'),
-      dashboard.button('n', '  Notes (Obsidian)', ':cd /mnt/c/Users/sidne/Desktop/Notes/Obsidian | :Telescope find_files<CR>'),
-      dashboard.button('c', '  Config', ':e ~/.config/nvim/<CR>'),
+      dashboard.button('p', '  Projects', ':Neotree ~/code/<CR>'),
+      dashboard.button('n', '  Notes (Obsidian)', ':cd /mnt/c/Users/sidne/Desktop/Notes/Obsidian | :Neotree <CR>'),
+      dashboard.button('c', '  Config', ':Neotree ~/.config/nvim/<CR>'),
       dashboard.button('q', '  Quit', ':qa<CR>'),
     }
 
+    -- Disable alpha's internal autostart (its should_skip_alpha check is flaky)
+    dashboard.opts.opts.autostart = false
     alpha.setup(dashboard.opts)
+
+    -- Start alpha ourselves, bypassing should_skip_alpha
+    vim.api.nvim_create_autocmd('VimEnter', {
+      group = vim.api.nvim_create_augroup('alpha_force_start', { clear = true }),
+      pattern = '*',
+      nested = true,
+      once = true,
+      callback = function()
+        vim.schedule(function()
+          if vim.fn.argc() == 0 then
+            pcall(vim.cmd.Alpha)
+          end
+        end)
+      end,
+    })
   end,
 }

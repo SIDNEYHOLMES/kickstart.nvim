@@ -13,13 +13,13 @@ Settings:
   hide_gitignored = true    Hide files listed in .gitignore
 --]]
 return {
-  "nvim-neo-tree/neo-tree.nvim",
-  cmd = "Neotree",
-  keys = { { "<leader>e", "<cmd>Neotree toggle<CR>", desc = "Toggle file tree" } },
+  'nvim-neo-tree/neo-tree.nvim',
+  lazy = false,
+  keys = { { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Toggle file tree' } },
   dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons",
-    "MunifTanjim/nui.nvim",
+    'nvim-lua/plenary.nvim',
+    'nvim-tree/nvim-web-devicons',
+    'MunifTanjim/nui.nvim',
   },
   opts = {
     filesystem = {
@@ -29,9 +29,29 @@ return {
     -- <CR> opens files (default neo-tree behavior).
     -- NOTE: <Space> is mapped to <Nop> globally in keymaps.lua.
     -- which-key hooks into the keypress to show the leader popup.
-    mappings = {
-      ["<Space>"] = false,
-      ["<CR>"] = "open",
-    },
   },
+  config = function(_, opts)
+    require('neo-tree').setup(opts)
+
+    -- Open Neotree when nvim starts with a directory
+    vim.api.nvim_create_autocmd('VimEnter', {
+      group = vim.api.nvim_create_augroup('neotree_start', { clear = true }),
+      pattern = '*',
+      nested = true,
+      once = true,
+      callback = function()
+        if vim.fn.argc() > 0 then
+          local arg = vim.fn.argv(0)
+          if vim.fn.isdirectory(arg) == 1 then
+            vim.cmd('Neotree ' .. vim.fn.fnameescape(arg))
+            -- Show dashboard on the right as decorative sidebar
+            vim.schedule(function()
+              vim.cmd('wincmd l')
+              pcall(vim.cmd.Alpha)
+            end)
+          end
+        end
+      end,
+    })
+  end,
 }
