@@ -23,16 +23,16 @@ return {
     -- Backslashes are literal in [[ ]], no \\ needed
     dashboard.section.header.val = {
       [[      ___                                     ___                                     ___     ]],
-      [[     /\__\                     _____         /\  \                      ___          /\  \    ]],
-      [[    /:/ _/_       ___         /::\  \        \:\  \       ___          /\  \        |::\  \   ]],
-      [[   /:/ /\  \     /\__\       /:/\:\  \        \:\  \     /\__\         \:\  \       |:|:\  \  ]],
-      [[  /:/ /::\  \   /:/__/      /:/  \:\__\   _____\:\  \   /:/__/          \:\  \    __|:|\:\  \ ]],
-      [[ /:/_/:/\:\__\ /::\  \     /:/__/ \:|__| /::::::::\__\ /::\  \      ___  \:\__\  /::::|_\:\__\]],
-      [[ \:\/:/ /:/  / \/\:\  \__  \:\  \ /:/  / \:\~~\~~\/__/ \/\:\  \__  /\  \ |:|  |  \:\~~\  \/__/]],
-      [[  \::/ /:/  /   ~~\:\/\__\  \:\  /:/  /   \:\  \        ~~\:\/\__\ \:\  \|:|  |   \:\  \      ]],
-      [[   \/_/:/  /       \::/  /   \:\/:/  /     \:\  \          \::/  /  \:\__|:|__|    \:\  \     ]],
-      [[     /:/  /        /:/  /     \::/  /       \:\__\         /:/  /    \::::/__/      \:\__\    ]],
-      [[     \/__/         \/__/       \/__/         \/__/         \/__/      ~~~~           \/__/    ]],
+      [[     /\__\                     _____         /\  \          ___                      /\  \    ]],
+      [[    /:/ _/_       ___         /::\  \        \:\  \        /\  \        ___         |::\  \   ]],
+      [[   /:/ /\  \     /\__\       /:/\:\  \        \:\  \       \:\  \      /\__\        |:|:\  \  ]],
+      [[  /:/ /::\  \   /:/__/      /:/  \:\__\   _____\:\  \       \:\  \    /:/__/      __|:|\:\  \ ]],
+      [[ /:/_/:/\:\__\ /::\  \     /:/__/ \:|__| /::::::::\__\  ___  \:\__\  /::\  \     /::::|_\:\__\]],
+      [[ \:\/:/ /:/  / \/\:\  \__  \:\  \ /:/  / \:\~~\~~\/__/ /\  \ |:|  |  \/\:\  \__  \:\~~\  \/__/]],
+      [[  \::/ /:/  /     \:\/\__\  \:\  /:/  /   \:\  \       \:\  \|:|  |     \:\/\__\  \:\  \      ]],
+      [[   \/_/:/  /       \::/  /   \:\/:/  /     \:\  \       \:\__|:|__|      \::/  /   \:\  \     ]],
+      [[     /:/  /        /:/  /     \::/  /       \:\__\       \::::/__/       /:/  /     \:\__\    ]],
+      [[     \/__/         \/__/       \/__/         \/__/        ~~~~           \/__/       \/__/    ]],
     }
 
     -- Quick-action buttons
@@ -40,7 +40,9 @@ return {
       dashboard.button('f', '  Find file', ':Telescope find_files<CR>'),
       dashboard.button('r', '  Recent files', ':Telescope oldfiles<CR>'),
       dashboard.button('p', '  Projects', ':Neotree ~/code/<CR>'),
-      dashboard.button('n', '  Notes (Obsidian)', ':cd /mnt/c/Users/sidne/Desktop/Notes/Obsidian | :Neotree <CR>'),
+      dashboard.button('n', '  Notes (Obsidian)', function()
+        vim.cmd('Neotree /mnt/c/Users/sidne/Desktop/Notes/Obsidian')
+      end),
       dashboard.button('c', '  Config', ':Neotree ~/.config/nvim/<CR>'),
       dashboard.button('q', '  Quit', ':qa<CR>'),
     }
@@ -57,9 +59,7 @@ return {
       once = true,
       callback = function()
         vim.schedule(function()
-          if vim.fn.argc() == 0 then
-            pcall(vim.cmd.Alpha)
-          end
+          if vim.fn.argc() == 0 then pcall(vim.cmd.Alpha) end
         end)
       end,
     })

@@ -20,23 +20,27 @@ To add a new group:
   2. Add individual mappings in keymaps.lua with `<leader>g` prefix
 --]]
 return {
-  "folke/which-key.nvim",
-  event = "VeryLazy",
+  'folke/which-key.nvim',
+  event = 'VeryLazy',
   opts = {
-    preset = "modern",
+    preset = 'modern',
     defaults = {
-      mode = { "n", "v" },
+      mode = { 'n', 'v' },
+    },
+    disable = {
+      ft = { 'NeogitStatus', 'NeogitCommitMessage', 'NeogitPopup', 'NeogitLog' },
     },
   },
   config = function(_, opts)
-    local wk = require("which-key")
+    local wk = require 'which-key'
     wk.setup(opts)
 
     -- Register leader prefix groups only.
     -- Individual keybindings are auto-discovered from their `desc` attributes.
-    wk.add({
-      { "<leader>", group = "Leader" },
-      { "<leader>b", group = "Buffer" },
-    })
+    wk.add {
+      { '<leader>', group = 'Leader' },
+      { '<leader>b', group = 'Buffer' },
+      { '<leader>g', group = 'Git' },
+    }
   end,
 }

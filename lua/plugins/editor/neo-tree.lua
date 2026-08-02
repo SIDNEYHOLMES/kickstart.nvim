@@ -14,7 +14,6 @@ Settings:
 --]]
 return {
   'nvim-neo-tree/neo-tree.nvim',
-  lazy = false,
   keys = { { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Toggle file tree' } },
   dependencies = {
     'nvim-lua/plenary.nvim',
@@ -24,6 +23,11 @@ return {
   opts = {
     filesystem = {
       filtered_items = { hide_dotfiles = false, hide_gitignored = true },
+    },
+    window = {
+      mappings = {
+        ['<Space>'] = 'none',
+      },
     },
     -- Disable neo-tree's <Space> mapping so leader key works.
     -- <CR> opens files (default neo-tree behavior).
@@ -46,7 +50,7 @@ return {
             vim.cmd('Neotree ' .. vim.fn.fnameescape(arg))
             -- Show dashboard on the right as decorative sidebar
             vim.schedule(function()
-              vim.cmd('wincmd l')
+              vim.cmd 'wincmd l'
               pcall(vim.cmd.Alpha)
             end)
           end

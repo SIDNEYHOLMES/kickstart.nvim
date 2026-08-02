@@ -24,10 +24,6 @@ local opts = { noremap = true, silent = true }
 -- F1 brings the dashboard(home page) to view
 map('n', '<F1>', ':Alpha<CR>', opts)
 
--- ── Space as leader prefix ──────────────────────────────────────
--- Space alone does nothing — it only works as a prefix for leader combos
-map('n', '<Space>', '<Nop>', opts)
-
 -- ── Terminal ─────────────────────────────────────────────────────
 -- Double Escape exits terminal mode back to normal mode
 map('t', '<Esc><Esc>', '<C-\\><C-n>', opts)
@@ -80,6 +76,19 @@ map('n', '<leader>r', function()
     end)
   end
 end, { desc = 'Window resize mode (S-hjkl)' })
+
+-- ── Open URL under cursor ─────────────────────────────────────────
+-- gx opens URL/file under cursor. Uses explorer.exe (WSL) for URLs.
+map('n', 'gx', function()
+  local url = vim.fn.expand '<cfile>'
+  if url and url ~= '' then
+    if url:match '^https?://' then
+      vim.fn.jobstart { 'explorer.exe', url }
+    else
+      vim.ui.open(url)
+    end
+  end
+end, { desc = 'Open URL under cursor' })
 
 -- ── Buffer navigation ───────────────────────────────────────────
 -- Uses real keybindings (not a modal system) so which-key shows them.

@@ -20,7 +20,7 @@ vim.opt.scrolloff = 8 -- keep 8 lines above/below cursor
 vim.opt.updatetime = 50 -- faster CursorHold
 vim.opt.splitbelow = true -- horizontal split below
 vim.opt.splitright = true -- vertical split right
-vim.opt.timeoutlen = 1000 -- leader key timeout (ms)
+vim.opt.timeoutlen = 300 -- leader key timeout (ms)
 vim.opt.shortmess:append 'I' -- disable nvim splash screen
 
 -- Disable netrw (default file explorer) — Neotree handles this
