@@ -14,6 +14,7 @@ Settings:
 --]]
 return {
   'nvim-neo-tree/neo-tree.nvim',
+  cmd = 'Neotree',
   keys = { { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Toggle file tree' } },
   dependencies = {
     'nvim-lua/plenary.nvim',
