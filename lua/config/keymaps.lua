@@ -63,10 +63,10 @@ map('n', '<leader>&', ':close<CR>', { desc = 'Close window' })
 map('n', '<leader>r', function()
   print 'Resize: S-h/j/k/l, any other key exits'
   local resize = function(key, cmd) vim.keymap.set('n', key, cmd, { buffer = true, nowait = true }) end
-  resize('<S-h>', '5<C-w><')
+  resize('<S-l>', '5<C-w><')
   resize('<S-j>', '5<C-w>-')
   resize('<S-k>', '5<C-w>+')
-  resize('<S-l>', '5<C-w>>')
+  resize('<S-h>', '5<C-w>>')
   for _, k in ipairs { 'h', 'j', 'k', 'l', '<Esc>', '<CR>', 'i', 'v' } do
     resize(k, function()
       for _, rk in ipairs { '<S-h>', '<S-j>', '<S-k>', '<S-l>', 'h', 'j', 'k', 'l', '<Esc>', '<CR>', 'i', 'v' } do
