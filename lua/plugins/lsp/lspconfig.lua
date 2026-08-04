@@ -32,8 +32,8 @@ return {
         map('K', vim.lsp.buf.hover, 'Hover')
         map('<leader>rn', vim.lsp.buf.rename, 'Rename')
         map('<leader>ca', vim.lsp.buf.code_action, 'Code action')
-        map('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
-        map(']d', vim.diagnostic.goto_next, 'Next diagnostic')
+        map('[d', function() vim.diagnostic.jump { count = -1, float = false } end, 'Previous diagnostic')
+        map(']d', function() vim.diagnostic.jump { count = 1, float = false } end, 'Next diagnostic')
         map('<leader>q', vim.diagnostic.open_float, 'Show diagnostic error')
       end,
     })
