@@ -24,6 +24,8 @@ return {
   opts = {
     filesystem = {
       filtered_items = { hide_dotfiles = false, hide_gitignored = true },
+      follow_current_file = { enabled = true },
+      use_libuv_file_watcher = true,
     },
     window = {
       mappings = {
@@ -37,6 +39,17 @@ return {
   },
   config = function(_, opts)
     require('neo-tree').setup(opts)
+
+    -- Refresh neo-tree git status when regaining focus (e.g. after git commit in terminal)
+    vim.api.nvim_create_autocmd('FocusGained', {
+      group = vim.api.nvim_create_augroup('neotree_refresh', { clear = true }),
+      pattern = '*',
+      callback = function()
+        if package.loaded['neo-tree'] then
+          pcall(vim.cmd, 'Neotree refresh')
+        end
+      end,
+    })
 
     -- Open Neotree when nvim starts with a directory
     vim.api.nvim_create_autocmd('VimEnter', {
