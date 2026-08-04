@@ -37,6 +37,22 @@ return {
     },
     -- Auto-setup each server with cmp capabilities
     handlers = {
+      -- lua_ls: recognize Neovim globals (vim, etc.)
+      lua_ls = function()
+        local lspconfig = require("lspconfig")
+        local capabilities = require("cmp_nvim_lsp").default_capabilities()
+        lspconfig.lua_ls.setup({
+          capabilities = capabilities,
+          settings = {
+            Lua = {
+              runtime = { version = "LuaJIT" },
+              diagnostics = { globals = { "vim" } },
+              workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+              telemetry = { enable = false },
+            },
+          },
+        })
+      end,
       function(server_name)
         local lspconfig = require("lspconfig")
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
