@@ -29,7 +29,7 @@ return {
     },
     window = {
       mappings = {
-        ['<Space>'] = 'none',
+        ['<space>'] = "noop",
       },
     },
     -- Disable neo-tree's <Space> mapping so leader key works.
